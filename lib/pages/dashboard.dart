@@ -8,9 +8,11 @@ class Dashboard extends StatefulWidget{
 
 class _Dashboard extends State<Dashboard>{
 
+
+
   Widget yourStatus(){
     return Padding(
-      padding: const EdgeInsets.only(left:10.0,right:10.0),
+      padding: const EdgeInsets.only(left:8.0,right:10.0),
       child: Column(
         children: <Widget>[
           CircleAvatar(
@@ -64,6 +66,7 @@ class _Dashboard extends State<Dashboard>{
   }
 
   Widget postCard(context){
+    bool isLiked =false;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -91,21 +94,28 @@ class _Dashboard extends State<Dashboard>{
         
         Padding(
           padding: const EdgeInsets.only(top:8.0,bottom: 8.0),
-          child: Container(
-            height: MediaQuery.of(context).size.height/3+20,
-            width: MediaQuery.of(context).size.width,
-            child: Image(
-              image: AssetImage('assets/post.jpg'),
-              fit: BoxFit.cover,
+          child: GestureDetector(
+            onDoubleTap: (){
+              setState(() {
+              });
+              print('Double Tapped');
+
+            },
+                      child: Container(
+              height: MediaQuery.of(context).size.height/3+20,
+              width: MediaQuery.of(context).size.width,
+              child: Image(
+                image: AssetImage('assets/post.jpg'),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
         ),
         Row(
           children: <Widget>[
-            
             Padding(
               padding: const EdgeInsets.only(left:10.0),
-              child: Icon(Icons.favorite_border,size: 25,),
+              child: isLiked ? Icon(Icons.favorite,color: Colors.red,size: 25,) :Icon(Icons.favorite_border,size: 25,),
             ),
 
             Padding(
@@ -158,7 +168,7 @@ class _Dashboard extends State<Dashboard>{
 
                 GestureDetector(
                   onTap: (){
-                    
+
                   },
                                   child: Padding(
                     padding: const EdgeInsets.only(top:8.0,left:20),
@@ -187,7 +197,7 @@ class _Dashboard extends State<Dashboard>{
 
 
   @override
-  Widget build(BuildContext content){
+  Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
         leading: Row(
@@ -207,16 +217,8 @@ class _Dashboard extends State<Dashboard>{
         child: Column(
           children: <Widget>[
             statusBar(),
-            Container(
-              height: MediaQuery.of(context).size.height,
-                child: ListView(
-                scrollDirection: Axis.vertical,
-                children: <Widget>[
                   postCard(context),
                   postCard(context)
-                ],
-              ),
-            )
           ],
         ),
       ),
