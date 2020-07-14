@@ -8,7 +8,7 @@ class Dashboard extends StatefulWidget{
 
 class _Dashboard extends State<Dashboard>{
 
-
+  final postList = Set<String>();
 
   Widget yourStatus(){
     return Padding(
@@ -65,8 +65,8 @@ class _Dashboard extends State<Dashboard>{
     );
   }
 
-  Widget postCard(context){
-    bool isLiked =false;
+  Widget postCard(context,String key){
+    bool isLiked = postList.contains(key);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -97,8 +97,13 @@ class _Dashboard extends State<Dashboard>{
           child: GestureDetector(
             onDoubleTap: (){
               setState(() {
+              if(postList.contains(key)){
+                postList.remove(key);
+              }else{
+                postList.add(key);
+              }
               });
-              print('Double Tapped');
+              print(postList);
 
             },
                       child: Container(
@@ -113,9 +118,20 @@ class _Dashboard extends State<Dashboard>{
         ),
         Row(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left:10.0),
-              child: isLiked ? Icon(Icons.favorite,color: Colors.red,size: 25,) :Icon(Icons.favorite_border,size: 25,),
+            GestureDetector(
+              onTap: (){
+              setState(() {
+              if(postList.contains(key)){
+                postList.remove(key);
+              }else{
+                postList.add(key);
+              }
+              });
+              },
+                          child: Padding(
+                padding: const EdgeInsets.only(left:10.0),
+                child: isLiked ? Icon(Icons.favorite,color: Colors.red,size: 25,) :Icon(Icons.favorite_border,size: 25,),
+              ),
             ),
 
             Padding(
@@ -217,8 +233,8 @@ class _Dashboard extends State<Dashboard>{
         child: Column(
           children: <Widget>[
             statusBar(),
-                  postCard(context),
-                  postCard(context)
+                  postCard(context,'1'),
+                  postCard(context,'2')
           ],
         ),
       ),
