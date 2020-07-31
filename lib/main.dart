@@ -1,6 +1,6 @@
-import 'package:Insta/pages/dashboard.dart';
+import 'package:Insta/pages/login.dart';
 import 'package:flutter/material.dart';
-import 'package:Insta/routes.generator.dart';
+import 'package:Insta/routes_generator.dart';
 
 void main() => runApp(MyApp());
 
@@ -9,13 +9,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-          // initialRoute: '/',
-         home: Dashboard(),
-        title: 'Que ',
-        onGenerateRoute: RouteGenerator.generateRoute,                                                                                                                                                                                                                                                                                                                                                                                                                              
-        theme: ThemeData.dark(),
-      );
+      debugShowCheckedModeBanner: false,
+      // initialRoute: '/',
+      home: SignIn(),
+      title: 'Instagram ',
+      onGenerateRoute: RouteGenerator.generateRoute,
+      theme: ThemeData.dark(),
+    );
   }
 }
-
