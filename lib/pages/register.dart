@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
-class SignIn extends StatefulWidget {
+class Register extends StatefulWidget {
   @override
-  _SignInState createState() {
-    return _SignInState();
+  _RegisterState createState() {
+    return _RegisterState();
   }
 }
 
-class _SignInState extends State<SignIn> {
+class _RegisterState extends State<Register> {
+  bool value = false;
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
@@ -68,6 +69,18 @@ class _SignInState extends State<SignIn> {
                   ],
                 ),
               )),
+              // CheckboxListTile(
+              //   activeColor: Colors.grey,
+              //   title: Text("I agree with the terms."),
+              //   value: value,
+              //   onChanged: (newValue) {
+              //     setState(() {
+              //       value = !value;
+              //     });
+              //   },
+              //   // controlAffinity:
+              //   //     ListTileControlAffinity.leading, //  <-- leading Checkbox
+              // ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: RaisedButton(
@@ -82,43 +95,11 @@ class _SignInState extends State<SignIn> {
                           borderRadius: BorderRadius.circular(20)),
                       child: Padding(
                         padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
-                        child: Center(child: Text('Login')),
+                        child: Center(child: Text('Create my account')),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Row(children: <Widget>[
-                  Expanded(
-                    child: new Container(
-                        margin: const EdgeInsets.only(left: 10.0, right: 15.0),
-                        child: Divider(
-                          color: Colors.grey,
-                          height: 50,
-                        )),
-                  ),
-                  Text("OR"),
-                  Expanded(
-                    child: new Container(
-                        margin: const EdgeInsets.only(left: 15.0, right: 10.0),
-                        child: Divider(
-                          color: Colors.grey,
-                          height: 50,
-                        )),
-                  ),
-                ]),
-              ),
-              FlatButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed('/register');
-                },
-                child: SizedBox(
-                    width: double.infinity,
-                    child: Center(
-                      child: Text('Create a new account?'),
-                    )),
               ),
             ],
           ),

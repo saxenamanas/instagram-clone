@@ -235,7 +235,8 @@ class _Dashboard extends State<Dashboard> {
                 child: Icon(Icons.camera_alt)),
           ],
         ),
-        title: Text('Instagram', style: TextStyle(fontFamily: 'Satisfy')),
+        title: Text('Instagram',
+            style: TextStyle(fontFamily: 'Satisfy', fontSize: 24.0)),
         actions: <Widget>[
           GestureDetector(
               onTap: () {

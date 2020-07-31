@@ -3,13 +3,14 @@ import 'package:Insta/pages/dashboard.dart';
 import 'package:Insta/pages/camera.dart';
 import 'package:Insta/pages/messages.dart';
 import 'package:Insta/pages/login.dart';
+import 'package:Insta/pages/register.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     // Getting arguments passed in while calling Navigator.pushNamed
     final args = settings.arguments;
     switch (settings.name) {
-      case '/':
+      case '/home':
         return MaterialPageRoute(builder: (_) => Dashboard());
       case '/camera':
         return MaterialPageRoute(builder: (_) => CameraApp());
@@ -17,6 +18,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => Messages());
       case '/login':
         return MaterialPageRoute(builder: (_) => SignIn());
+      case '/register':
+        return MaterialPageRoute(builder: (_) => Register());
       default:
         // If there is no such named route in the switch statement, e.g. /third
         return _errorRoute();
