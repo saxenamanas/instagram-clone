@@ -230,7 +230,7 @@ class _Dashboard extends State<Dashboard> {
             ),
             GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pushNamed('/login');
+                  Navigator.of(context).pushNamed('/posts');
                 },
                 child: Icon(Icons.camera_alt)),
           ],

@@ -4,6 +4,7 @@ import 'package:Insta/pages/camera.dart';
 import 'package:Insta/pages/messages.dart';
 import 'package:Insta/pages/login.dart';
 import 'package:Insta/pages/register.dart';
+import 'package:Insta/pages/post.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -20,6 +21,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => SignIn());
       case '/register':
         return MaterialPageRoute(builder: (_) => Register());
+      case '/posts':
+        return MaterialPageRoute(builder: (_) => Post());
       default:
         // If there is no such named route in the switch statement, e.g. /third
         return _errorRoute();
