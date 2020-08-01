@@ -1,5 +1,5 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -58,6 +58,9 @@ class _Dashboard extends State<Dashboard> {
           scrollDirection: Axis.horizontal,
           children: <Widget>[
             yourStatus(),
+            status(),
+            status(),
+            status(),
             status(),
             status(),
             status(),
@@ -179,9 +182,14 @@ class _Dashboard extends State<Dashboard> {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 10.0, top: 5),
-          child: Text(
-            'View all 10 comments',
-            style: TextStyle(color: Colors.grey),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushNamed('/comments');
+            },
+            child: Text(
+              'View all 10 comments',
+              style: TextStyle(color: Colors.grey),
+            ),
           ),
         ),
         Row(
@@ -196,13 +204,37 @@ class _Dashboard extends State<Dashboard> {
                 radius: 13,
               ),
             ),
-            GestureDetector(
-              onTap: () {},
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8.0, left: 20),
-                child: Text(
-                  'Add a comment...',
-                  style: TextStyle(color: Colors.grey),
+            Expanded(
+              child: GestureDetector(
+                onTap: () {},
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8.0, left: 20),
+                  child: Container(
+                    height: 35,
+                    padding: EdgeInsets.only(
+                      top: 15,
+                    ),
+                    child: TextField(
+                      style: TextStyle(
+                        color: Colors.white,
+//                        fontSize: 20.0,
+                      ),
+                      decoration: InputDecoration(
+                        fillColor: Colors.grey[850],
+                        filled: true,
+                        hintText: 'Add a comment...',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -253,7 +285,11 @@ class _Dashboard extends State<Dashboard> {
           children: <Widget>[
             statusBar(),
             postCard(context, '1'),
-            postCard(context, '2')
+            postCard(context, '2'),
+            postCard(context, '3'),
+            postCard(context, '4'),
+            postCard(context, '5'),
+            postCard(context, '6')
           ],
         ),
       ),
