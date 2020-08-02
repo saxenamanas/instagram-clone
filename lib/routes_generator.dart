@@ -6,6 +6,7 @@ import 'package:Insta/pages/messages.dart';
 import 'package:Insta/pages/post.dart';
 import 'package:Insta/pages/register.dart';
 import 'package:flutter/material.dart';
+import 'package:Insta/pages/maintab.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -26,6 +27,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => Post());
       case '/comments':
         return MaterialPageRoute(builder: (_) => Comments());
+      case '/tabs':
+        return MaterialPageRoute(builder: (_) => MainMenu());
       default:
         // If there is no such named route in the switch statement, e.g. /third
         return _errorRoute();
