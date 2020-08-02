@@ -72,7 +72,7 @@ class _SignInState extends State<SignIn> {
                 padding: const EdgeInsets.only(top: 8.0),
                 child: RaisedButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed('/home');
+                    Navigator.of(context).pushNamed('/tabs');
                   },
                   child: SizedBox(
                     width: double.infinity,

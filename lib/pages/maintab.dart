@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:Insta/pages/dashboard.dart';
+import 'package:Insta/routes_generator.dart';
+import 'package:Insta/pages/account.dart';
 
 class MainMenu extends StatefulWidget {
   MainMenu({Key key}) : super(key: key);
@@ -11,7 +13,7 @@ class MainMenu extends StatefulWidget {
 
 class _MainMenuState extends State<MainMenu> {
   List<Widget> _buildScreens() {
-    return [Dashboard(), Dashboard()];
+    return [Dashboard(), Account()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
