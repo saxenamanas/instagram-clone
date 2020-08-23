@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -8,6 +9,32 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  String email, password;
+  FirebaseAuth auth = FirebaseAuth.instance;
+
+  Future signInUser() async {
+    try {
+      UserCredential result = await auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      if (result != null) {
+        Navigator.of(context).pushNamed('/home');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future checkStatus() async {
+    if (auth.currentUser.uid != null) {
+      Navigator.of(context).pushNamed('/home');
+    }
+  }
+
+  void initState() {
+    // checkStatus();
+    super.initState();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
@@ -33,6 +60,9 @@ class _SignInState extends State<SignIn> {
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                       child: TextFormField(
+                        onChanged: (text) {
+                          email = text;
+                        },
                         decoration: InputDecoration(
                           hintText: 'Username',
                           hintStyle: TextStyle(color: Colors.grey),
@@ -51,6 +81,9 @@ class _SignInState extends State<SignIn> {
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                       child: TextFormField(
+                        onChanged: (text) {
+                          password = text;
+                        },
                         decoration: InputDecoration(
                             hintText: 'Password',
                             hintStyle: TextStyle(color: Colors.grey),
@@ -72,7 +105,7 @@ class _SignInState extends State<SignIn> {
                 padding: const EdgeInsets.only(top: 8.0),
                 child: RaisedButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed('/tabs');
+                    signInUser();
                   },
                   child: SizedBox(
                     width: double.infinity,

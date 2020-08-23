@@ -1,5 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:Insta/models/user.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:Insta/pages/loader.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -7,7 +12,21 @@ class Dashboard extends StatefulWidget {
 }
 
 class _Dashboard extends State<Dashboard> {
+  FirebaseFirestore db = FirebaseFirestore.instance;
+  InstaUser user;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  Future getUserData() async {
+    print('Auth id is ' + auth.currentUser.uid);
+    DocumentSnapshot res =
+        await db.collection('users').doc(auth.currentUser.uid).get();
+    dynamic data = res.data();
+    setState(() {
+      user = InstaUser(data['avatar'], data['bio'], data['email']);
+    });
+  }
+
   void initState() {
+    getUserData();
     super.initState();
   }
 
@@ -16,17 +35,22 @@ class _Dashboard extends State<Dashboard> {
   Widget yourStatus() {
     return Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 10.0),
-      child: Column(
-        children: <Widget>[
-          CircleAvatar(
-              radius: 30.0, backgroundImage: AssetImage('assets/person.jpg')),
-          SizedBox(
-            height: 5,
-          ),
-          Center(
-            child: Text('Your Story'),
-          )
-        ],
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).pushNamed('/myprofile');
+        },
+        child: Column(
+          children: <Widget>[
+            CircleAvatar(
+                radius: 30.0, backgroundImage: NetworkImage(user.getAvatar)),
+            SizedBox(
+              height: 5,
+            ),
+            Center(
+              child: Text('Your Story'),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -58,13 +82,13 @@ class _Dashboard extends State<Dashboard> {
           scrollDirection: Axis.horizontal,
           children: <Widget>[
             yourStatus(),
-            status(),
-            status(),
-            status(),
-            status(),
-            status(),
-            status(),
-            status()
+            // status(),
+            // status(),
+            // status(),
+            // status(),
+            // status(),
+            // status(),
+            // status()
           ],
         ),
       ),
@@ -253,46 +277,59 @@ class _Dashboard extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: Row(
-          children: <Widget>[
+    if (user == null)
+      return Loader();
+    else
+      return Scaffold(
+        appBar: AppBar(
+          leading: Row(
+            children: <Widget>[
+              SizedBox(
+                width: 10,
+              ),
+              GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pushNamed('/posts');
+                  },
+                  child: Icon(Icons.camera_alt)),
+            ],
+          ),
+          title: Text('Instagram',
+              style: TextStyle(fontFamily: 'Satisfy', fontSize: 24.0)),
+          actions: <Widget>[
+            GestureDetector(
+                onTap: () {
+                  SchedulerBinding.instance.addPostFrameCallback((_) {
+                    Navigator.of(context).pushNamed('/myprofile');
+                  });
+                },
+                child: Icon(Icons.people)),
             SizedBox(
-              width: 10,
+              width: 20,
             ),
             GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pushNamed('/posts');
+                  Navigator.of(context).pushNamed('/messages');
                 },
-                child: Icon(Icons.camera_alt)),
+                child: Icon(Icons.message)),
+            SizedBox(
+              width: 10,
+            )
           ],
         ),
-        title: Text('Instagram',
-            style: TextStyle(fontFamily: 'Satisfy', fontSize: 24.0)),
-        actions: <Widget>[
-          GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed('/messages');
-              },
-              child: Icon(Icons.message)),
-          SizedBox(
-            width: 10,
-          )
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            statusBar(),
-            postCard(context, '1'),
-            postCard(context, '2'),
-            postCard(context, '3'),
-            postCard(context, '4'),
-            postCard(context, '5'),
-            postCard(context, '6')
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              statusBar(),
+              postCard(context, '1'),
+              postCard(context, '2'),
+              postCard(context, '3'),
+              postCard(context, '4'),
+              postCard(context, '5'),
+              postCard(context, '6')
+            ],
+          ),
         ),
-      ),
-    );
+      );
   }
 }

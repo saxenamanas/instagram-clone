@@ -7,6 +7,7 @@ import 'package:Insta/pages/post.dart';
 import 'package:Insta/pages/register.dart';
 import 'package:flutter/material.dart';
 import 'package:Insta/pages/maintab.dart';
+import 'package:Insta/pages/account.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -15,6 +16,8 @@ class RouteGenerator {
     switch (settings.name) {
       case '/home':
         return MaterialPageRoute(builder: (_) => Dashboard());
+      case '/myprofile':
+        return MaterialPageRoute(builder: (_) => Account());
       case '/camera':
         return MaterialPageRoute(builder: (_) => CameraApp());
       case '/messages':
