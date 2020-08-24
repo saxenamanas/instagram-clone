@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Insta/models/user.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:Insta/pages/loader.dart';
+import 'package:Insta/models/posts.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _Dashboard extends State<Dashboard> {
+  List<Post> postFeed = [];
   FirebaseFirestore db = FirebaseFirestore.instance;
   InstaUser user;
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -25,8 +27,27 @@ class _Dashboard extends State<Dashboard> {
     });
   }
 
+  Future getPosts() async {
+    List<String> postID = [];
+    DocumentSnapshot data =
+        await db.collection('userPosts').doc(auth.currentUser.uid).get();
+    data.data()['posts'].forEach((ele) async {
+      DocumentSnapshot res = await db.collection('posts').doc(ele).get();
+      setState(() {
+        postFeed.add(Post(
+            res.data()['post'],
+            res.data()['caption'],
+            res.data()['author'],
+            res.data()['postId'],
+            res.data()['likes'],
+            res.data()['createdAt']));
+      });
+    });
+  }
+
   void initState() {
     getUserData();
+    getPosts();
     super.initState();
   }
 
@@ -277,7 +298,7 @@ class _Dashboard extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    if (user == null)
+    if (user == null || postFeed.isEmpty || postFeed == null)
       return Loader();
     else
       return Scaffold(
@@ -321,12 +342,8 @@ class _Dashboard extends State<Dashboard> {
           child: Column(
             children: <Widget>[
               statusBar(),
-              postCard(context, '1'),
-              postCard(context, '2'),
-              postCard(context, '3'),
-              postCard(context, '4'),
-              postCard(context, '5'),
-              postCard(context, '6')
+              for (int i = 0; i < postList.length; i++)
+                postCard(context, postFeed[i].getPostId)
             ],
           ),
         ),

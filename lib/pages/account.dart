@@ -19,7 +19,7 @@ class _AccountState extends State<Account> with SingleTickerProviderStateMixin {
     dynamic res = data.data();
     setState(() {
       user = InstaUser.sec(res['avatar'], res['bio'], res['username']);
-      print(user.getUsername + user.getBio + user.getAvatar);
+      // print(user.getUsername + user.getBio + user.getAvatar);
     });
   }
 
@@ -34,6 +34,7 @@ class _AccountState extends State<Account> with SingleTickerProviderStateMixin {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0, bottom: 10),
       child: Wrap(
+        direction: Axis.vertical,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(bottom: 5.0),

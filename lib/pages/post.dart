@@ -1,7 +1,9 @@
 import 'dart:io';
-
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Post extends StatefulWidget {
   @override
@@ -11,13 +13,36 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
-  var postImage;
+  FirebaseFirestore db = FirebaseFirestore.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
+  PickedFile postImage;
+  String caption = '';
   final ImagePicker _picker = ImagePicker();
   selectPostImage() async {
-    var temp = await _picker.getImage(source: ImageSource.gallery);
+    PickedFile temp = await _picker.getImage(source: ImageSource.gallery);
     setState(() {
       postImage = temp;
     });
+  }
+
+  Future makeMyPost() async {
+    var ref = db.collection('posts').doc();
+    final StorageReference storageReference =
+        FirebaseStorage().ref().child('posts/' + ref.id);
+    final StorageUploadTask uploadTask =
+        storageReference.putFile(File(postImage.path));
+    await uploadTask.onComplete;
+    print('File Uploaded');
+    String url = await storageReference.getDownloadURL();
+    await ref.set({
+      'post': url,
+      'caption': caption,
+      'likes': 0,
+      'createdAt': DateTime.now(),
+      'postId': ref.id,
+      'author': auth.currentUser.uid,
+    });
+    Navigator.of(context).pushNamed('/home');
   }
 
   Widget build(BuildContext context) {
@@ -45,6 +70,9 @@ class _PostState extends State<Post> {
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: TextField(
+                onChanged: (text) {
+                  caption = text;
+                },
                 maxLines: 8,
                 decoration: InputDecoration(
                   hintText: 'Your caption',
@@ -59,17 +87,22 @@ class _PostState extends State<Post> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
-                    child: Center(child: Text('Make my post')),
+            GestureDetector(
+              onTap: () {
+                makeMyPost();
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+                      child: Center(child: Text('Make my post')),
+                    ),
                   ),
                 ),
               ),
