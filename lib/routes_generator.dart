@@ -21,7 +21,7 @@ class RouteGenerator {
       case '/camera':
         return MaterialPageRoute(builder: (_) => CameraApp());
       case '/messages':
-        return MaterialPageRoute(builder: (_) => Messages());
+        return MaterialPageRoute(builder: (_) => FindFriend());
       case '/login':
         return MaterialPageRoute(builder: (_) => SignIn());
       case '/register':

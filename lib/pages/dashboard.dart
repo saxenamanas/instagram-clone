@@ -6,6 +6,8 @@ import 'package:Insta/models/user.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:Insta/pages/loader.dart';
 import 'package:Insta/models/posts.dart';
+import 'package:Insta/models/user.dart';
+import 'package:intl/intl.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -32,16 +34,27 @@ class _Dashboard extends State<Dashboard> {
     DocumentSnapshot data =
         await db.collection('userPosts').doc(auth.currentUser.uid).get();
     data.data()['posts'].forEach((ele) async {
-      DocumentSnapshot res = await db.collection('posts').doc(ele).get();
-      setState(() {
-        postFeed.add(Post(
-            res.data()['post'],
-            res.data()['caption'],
-            res.data()['author'],
-            res.data()['postId'],
-            res.data()['likes'],
-            res.data()['createdAt']));
-      });
+      if (ele != '') {
+        DocumentSnapshot res = await db.collection('posts').doc(ele).get();
+        DocumentSnapshot userRes =
+            await db.collection('users').doc(res.data()['author']).get();
+        print(userRes.data()['avatar']);
+        setState(() {
+          postFeed.add(
+            Post(
+                res.data()['post'],
+                res.data()['caption'],
+                res.data()['author'],
+                res.data()['postId'],
+                res.data()['likes'],
+                res.data()['createdAt'].toDate(),
+                userRes.data()['avatar'],
+                userRes.data()['username'],
+                userRes.data()['likedBy']),
+          );
+        });
+        print('Length is ' + postFeed.length.toString());
+      }
     });
   }
 
@@ -116,8 +129,8 @@ class _Dashboard extends State<Dashboard> {
     );
   }
 
-  Widget postCard(context, String key) {
-    bool isLiked = postList.contains(key);
+  Widget postCard(context, Post obj) {
+    print('Building');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -130,12 +143,12 @@ class _Dashboard extends State<Dashboard> {
             width: 10,
           ),
           CircleAvatar(
-            backgroundImage: AssetImage('assets/person-3.jpeg'),
+            backgroundImage: NetworkImage(obj.getPostAuthor.getAvatar),
           ),
           SizedBox(
             width: 10,
           ),
-          Text('the_good_quotes'),
+          Text(obj.getPostAuthor.getUsername),
           Spacer(),
           Icon(Icons.more_vert),
           SizedBox(
@@ -146,20 +159,14 @@ class _Dashboard extends State<Dashboard> {
           padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
           child: GestureDetector(
             onDoubleTap: () {
-              setState(() {
-                if (postList.contains(key)) {
-                  postList.remove(key);
-                } else {
-                  postList.add(key);
-                }
-              });
+              setState(() {});
               print(postList);
             },
             child: Container(
               height: MediaQuery.of(context).size.height / 3 + 20,
               width: MediaQuery.of(context).size.width,
               child: Image(
-                image: AssetImage('assets/post.jpg'),
+                image: NetworkImage(obj.getPost),
                 fit: BoxFit.cover,
               ),
             ),
@@ -168,18 +175,10 @@ class _Dashboard extends State<Dashboard> {
         Row(
           children: <Widget>[
             GestureDetector(
-              onTap: () {
-                setState(() {
-                  if (postList.contains(key)) {
-                    postList.remove(key);
-                  } else {
-                    postList.add(key);
-                  }
-                });
-              },
+              onTap: () {},
               child: Padding(
                 padding: const EdgeInsets.only(left: 10.0),
-                child: isLiked
+                child: true
                     ? Icon(
                         Icons.favorite,
                         color: Colors.red,
@@ -221,7 +220,7 @@ class _Dashboard extends State<Dashboard> {
         Padding(
           padding: const EdgeInsets.only(left: 10.0, top: 10),
           child: Text(
-            '1,000 likes',
+            obj.getLikes.toString() + ' likes',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
@@ -232,7 +231,7 @@ class _Dashboard extends State<Dashboard> {
               Navigator.of(context).pushNamed('/comments');
             },
             child: Text(
-              'View all 10 comments',
+              'View all 0 comments',
               style: TextStyle(color: Colors.grey),
             ),
           ),
@@ -288,7 +287,7 @@ class _Dashboard extends State<Dashboard> {
         Padding(
           padding: const EdgeInsets.only(left: 10.0, top: 10),
           child: Text(
-            'Just now',
+            DateFormat.yMMMMd('en_US').format(obj.createdAt),
             style: TextStyle(fontSize: 10, color: Colors.grey),
           ),
         )
@@ -298,7 +297,7 @@ class _Dashboard extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    if (user == null || postFeed.isEmpty || postFeed == null)
+    if (user == null)
       return Loader();
     else
       return Scaffold(
@@ -320,32 +319,30 @@ class _Dashboard extends State<Dashboard> {
           actions: <Widget>[
             GestureDetector(
                 onTap: () {
-                  SchedulerBinding.instance.addPostFrameCallback((_) {
-                    Navigator.of(context).pushNamed('/myprofile');
-                  });
+                  Navigator.of(context).pushNamed('/messages');
                 },
                 child: Icon(Icons.people)),
             SizedBox(
               width: 20,
             ),
-            GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pushNamed('/messages');
-                },
-                child: Icon(Icons.message)),
+            GestureDetector(onTap: () {}, child: Icon(Icons.message)),
             SizedBox(
               width: 10,
             )
           ],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              statusBar(),
-              for (int i = 0; i < postList.length; i++)
-                postCard(context, postFeed[i].getPostId)
-            ],
-          ),
+        body: Column(
+          children: <Widget>[
+            statusBar(),
+            Expanded(
+              child: ListView.builder(
+                itemCount: postFeed.length,
+                itemBuilder: (context, index) {
+                  return postCard(context, postFeed[index]);
+                },
+              ),
+            ),
+          ],
         ),
       );
   }

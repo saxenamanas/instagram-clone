@@ -11,12 +11,15 @@ class Account extends StatefulWidget {
 
 class _AccountState extends State<Account> with SingleTickerProviderStateMixin {
   TabController _tabController;
+  String friendCode = '';
   FirebaseFirestore db = FirebaseFirestore.instance;
   InstaUser user;
   final FirebaseAuth auth = FirebaseAuth.instance;
   Future getUserData() async {
-    dynamic data = await db.collection('users').doc(auth.currentUser.uid).get();
+    DocumentSnapshot data =
+        await db.collection('users').doc(auth.currentUser.uid).get();
     dynamic res = data.data();
+    friendCode = data.id;
     setState(() {
       user = InstaUser.sec(res['avatar'], res['bio'], res['username']);
       // print(user.getUsername + user.getBio + user.getAvatar);
@@ -44,6 +47,13 @@ class _AccountState extends State<Account> with SingleTickerProviderStateMixin {
             ),
           ),
           Text(user.getBio),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 5.0, top: 10),
+            child: Text(
+              'Friend Code : ' + friendCode,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
         ],
       ),
     );
@@ -59,6 +69,15 @@ class _AccountState extends State<Account> with SingleTickerProviderStateMixin {
             user.getUsername,
             style: TextStyle(fontSize: 17),
           ),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () async {
+                await auth.signOut();
+                Navigator.of(context).pushNamed('/login');
+              },
+              icon: Icon(Icons.power_settings_new),
+            )
+          ],
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -70,7 +89,7 @@ class _AccountState extends State<Account> with SingleTickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     CircleAvatar(
-                      backgroundImage: AssetImage('assets/person-3.jpeg'),
+                      backgroundImage: NetworkImage(user.getAvatar),
                       radius: 40,
                     ),
                     Column(

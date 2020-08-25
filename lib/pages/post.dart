@@ -41,6 +41,7 @@ class _PostState extends State<Post> {
       'createdAt': DateTime.now(),
       'postId': ref.id,
       'author': auth.currentUser.uid,
+      'likedBy': []
     });
     Navigator.of(context).pushNamed('/home');
   }

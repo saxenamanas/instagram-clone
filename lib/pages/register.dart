@@ -24,8 +24,16 @@ class _RegisterState extends State<Register> {
         'username': username,
         'bio': 'Hi! I use Instagram!',
         'avatar':
-            'https://cdn2.iconfinder.com/data/icons/avatar-profile/449/avatar_user_default_contact_profile_male-512.png'
+            'https://cdn2.iconfinder.com/data/icons/avatar-profile/449/avatar_user_default_contact_profile_male-512.png',
+        'followers': 0,
+        'following': 0,
+        'followersList': [],
+        'posts': 0
       });
+      await db
+          .collection('userPosts')
+          .doc(auth.currentUser.uid)
+          .set({'posts': []});
     } catch (e) {}
   }
 

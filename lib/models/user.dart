@@ -7,6 +7,7 @@ class InstaUser {
   String get getEmail => email;
   String get getBio => bio;
   String get getUsername => username;
+  String get getUid => uid;
   InstaUser(avatar, bio, email) {
     this.avatar = avatar;
     this.bio = bio;
@@ -17,5 +18,14 @@ class InstaUser {
     this.avatar = avatar;
     this.bio = bio;
     this.username = username;
+  }
+  InstaUser.post(avatar, username) {
+    this.avatar = avatar;
+    this.username = username;
+  }
+  InstaUser.search(avatar, username, userId) {
+    this.avatar = avatar;
+    this.username = username;
+    this.uid = userId;
   }
 }

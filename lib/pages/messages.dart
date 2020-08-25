@@ -1,14 +1,40 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:Insta/models/user.dart';
 
-class Messages extends StatefulWidget {
+class FindFriend extends StatefulWidget {
   @override
-  _Messages createState() => _Messages();
+  _FindFriend createState() => _FindFriend();
 }
 
-class _Messages extends State<Messages> {
+class _FindFriend extends State<FindFriend> {
+  FirebaseFirestore db = FirebaseFirestore.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String query = '';
+  InstaUser friend;
+
   Widget conversationHead() {
     return ListTile();
+  }
+
+  Future follow() async {
+    await db.collection('users').doc(friend.getUid).update({
+      'followersList': FieldValue.arrayUnion([auth.currentUser.uid])
+    });
+  }
+
+  Future findFriend() async {
+    QuerySnapshot friendSnap =
+        await db.collection('users').where('email', isEqualTo: query).get();
+    friendSnap.docs.forEach((element) {
+      Map details = element.data();
+      setState(() {
+        friend = InstaUser.search(
+            details['avatar'], details['username'], element.id);
+      });
+    });
   }
 
   Widget chatTile(bool isOnline) {
@@ -17,7 +43,7 @@ class _Messages extends State<Messages> {
       child: Row(
         children: <Widget>[
           CircleAvatar(
-            backgroundImage: AssetImage('assets/person-3.jpeg'),
+            backgroundImage: NetworkImage(friend.getAvatar),
             radius: 25,
           ),
           Padding(
@@ -25,19 +51,40 @@ class _Messages extends State<Messages> {
             child: Column(
               children: <Widget>[
                 Text(
-                  'John Doe',
+                  friend.getUsername,
                   style: TextStyle(fontSize: 16),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: Text(
-                    isOnline ? 'Active Now' : 'Active 2h ago',
-                    style: TextStyle(color: Colors.grey, fontSize: 14),
-                  ),
-                )
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 5.0),
+                //   child: Text(
+                //     isOnline ? 'Active Now' : 'Active 2h ago',
+                //     style: TextStyle(color: Colors.grey, fontSize: 14),
+                //   ),
+                // )
               ],
             ),
-          )
+          ),
+          Spacer(),
+          (friend.getUid != auth.currentUser.uid)
+              ? RaisedButton(
+                  onPressed: () {
+                    follow();
+                  },
+                  child: SizedBox(
+                    width: 100,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        // borderRadius: BorderRadius.circular(20)),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
+                        child: Center(child: Text('Follow')),
+                      ),
+                    ),
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
@@ -51,7 +98,7 @@ class _Messages extends State<Messages> {
               Navigator.of(context).pop();
             },
             child: Icon(Icons.arrow_back)),
-        title: Text('Direct'),
+        title: Text('Find Friends'),
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.only(left: 10.0, right: 10.0),
@@ -71,8 +118,17 @@ class _Messages extends State<Messages> {
             children: <Widget>[
               Center(
                 child: TextField(
+                  onChanged: (text) {
+                    query = text;
+                  },
                   decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
+                      // prefixIcon: Icon(Icons.search),
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: () {
+                          findFriend();
+                        },
+                      ),
                       hintText: 'Search your friends',
                       hintStyle: TextStyle(color: Colors.grey),
                       focusedBorder: OutlineInputBorder(
@@ -87,18 +143,13 @@ class _Messages extends State<Messages> {
               Padding(
                 padding: const EdgeInsets.only(top: 10.0, bottom: 10),
                 child: Text(
-                  'Messages',
+                  'Find Friend',
                   style: TextStyle(fontSize: 18),
                 ),
               ),
-              chatTile(true),
-              chatTile(false),
-              chatTile(true),
-              chatTile(true),
-              chatTile(false),
-              chatTile(false),
-              chatTile(false),
-              chatTile(false),
+              friend != null
+                  ? chatTile(true)
+                  : Center(child: Text('Search a user by email')),
             ],
           ),
         ),
