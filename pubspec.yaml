@@ -39,6 +39,7 @@ dependencies:
   cloud_firestore: ^0.14.0+1
   flutter_spinkit: "^4.1.2"
   firebase_storage: ^4.0.0
+  fluttertoast: ^7.0.2
 
 dev_dependencies:
   flutter_test:

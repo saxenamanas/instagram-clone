@@ -21,7 +21,8 @@ class _AccountState extends State<Account> with SingleTickerProviderStateMixin {
     dynamic res = data.data();
     friendCode = data.id;
     setState(() {
-      user = InstaUser.sec(res['avatar'], res['bio'], res['username']);
+      user = InstaUser.sec(res['avatar'], res['bio'], res['username'],
+          res['posts'], res['followers'], res['following']);
       // print(user.getUsername + user.getBio + user.getAvatar);
     });
   }
@@ -71,6 +72,12 @@ class _AccountState extends State<Account> with SingleTickerProviderStateMixin {
           ),
           actions: <Widget>[
             IconButton(
+              onPressed: () {
+                getUserData();
+              },
+              icon: Icon(Icons.refresh),
+            ),
+            IconButton(
               onPressed: () async {
                 await auth.signOut();
                 Navigator.of(context).pushNamed('/login');
@@ -97,7 +104,7 @@ class _AccountState extends State<Account> with SingleTickerProviderStateMixin {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 5.0),
                           child: Text(
-                            '9',
+                            user.getPosts.toString(),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 17),
                           ),
@@ -110,7 +117,7 @@ class _AccountState extends State<Account> with SingleTickerProviderStateMixin {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 5.0),
                           child: Text(
-                            '175',
+                            user.getFollowers.toString(),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 17),
                           ),
@@ -123,7 +130,7 @@ class _AccountState extends State<Account> with SingleTickerProviderStateMixin {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 5.0),
                           child: Text(
-                            '264',
+                            user.getFollowing.toString(),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 17),
                           ),
@@ -136,15 +143,20 @@ class _AccountState extends State<Account> with SingleTickerProviderStateMixin {
                 nameAndBio(),
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Container(
-                      height: 32,
-                      decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(color: Colors.grey[700])),
-                      child: Center(child: Text('Edit Profile')),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed('/editprofile');
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Container(
+                        height: 32,
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(color: Colors.grey[700])),
+                        child: Center(child: Text('Edit Profile')),
+                      ),
                     ),
                   ),
                 ),

@@ -84,6 +84,7 @@ class _SignInState extends State<SignIn> {
                         onChanged: (text) {
                           password = text;
                         },
+                        obscureText: true,
                         decoration: InputDecoration(
                             hintText: 'Password',
                             hintStyle: TextStyle(color: Colors.grey),

@@ -30,10 +30,9 @@ class _RegisterState extends State<Register> {
         'followersList': [],
         'posts': 0
       });
-      await db
-          .collection('userPosts')
-          .doc(auth.currentUser.uid)
-          .set({'posts': []});
+      await db.collection('userPosts').doc(auth.currentUser.uid).set({
+        'posts': ['bw5PcorndVNw52mvksts']
+      });
     } catch (e) {}
   }
 
@@ -108,6 +107,7 @@ class _RegisterState extends State<Register> {
                         onChanged: (text) {
                           password = text;
                         },
+                        obscureText: true,
                         decoration: InputDecoration(
                             hintText: 'Password',
                             hintStyle: TextStyle(color: Colors.grey),

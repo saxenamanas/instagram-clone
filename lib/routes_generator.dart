@@ -8,12 +8,15 @@ import 'package:Insta/pages/register.dart';
 import 'package:flutter/material.dart';
 import 'package:Insta/pages/maintab.dart';
 import 'package:Insta/pages/account.dart';
+import 'package:Insta/pages/editProfile.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     // Getting arguments passed in while calling Navigator.pushNamed
     final args = settings.arguments;
     switch (settings.name) {
+      case '/editprofile':
+        return MaterialPageRoute(builder: (_) => EditProfile());
       case '/home':
         return MaterialPageRoute(builder: (_) => Dashboard());
       case '/myprofile':

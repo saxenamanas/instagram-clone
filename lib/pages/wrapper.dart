@@ -3,6 +3,7 @@ import 'package:Insta/pages/loader.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:Insta/pages/dashboard.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Wrapper extends StatefulWidget {
   @override
@@ -35,6 +36,17 @@ class _WrapperState extends State<Wrapper> {
   }
 
   Future checkStatus() async {
-    return auth.currentUser.uid;
+    try {
+      return auth.currentUser.uid;
+    } catch (e) {
+      // Fluttertoast.showToast(
+      //     msg: e.toString(),
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.CENTER,
+      //     timeInSecForIosWeb: 1,
+      //     backgroundColor: Colors.red,
+      //     textColor: Colors.white,
+      //     fontSize: 16.0);
+    }
   }
 }

@@ -15,6 +15,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _Dashboard extends State<Dashboard> {
+  bool showLoader;
   List<Post> postFeed = [];
   FirebaseFirestore db = FirebaseFirestore.instance;
   InstaUser user;
@@ -33,6 +34,7 @@ class _Dashboard extends State<Dashboard> {
     List<String> postID = [];
     DocumentSnapshot data =
         await db.collection('userPosts').doc(auth.currentUser.uid).get();
+    postFeed.clear();
     data.data()['posts'].forEach((ele) async {
       if (ele != '') {
         DocumentSnapshot res = await db.collection('posts').doc(ele).get();
@@ -59,6 +61,7 @@ class _Dashboard extends State<Dashboard> {
   }
 
   void initState() {
+    showLoader = false;
     getUserData();
     getPosts();
     super.initState();
@@ -81,7 +84,7 @@ class _Dashboard extends State<Dashboard> {
               height: 5,
             ),
             Center(
-              child: Text('Your Story'),
+              child: Text('My Profile'),
             )
           ],
         ),
@@ -130,7 +133,7 @@ class _Dashboard extends State<Dashboard> {
   }
 
   Widget postCard(context, Post obj) {
-    print('Building');
+    print(obj.getCaption);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -217,6 +220,26 @@ class _Dashboard extends State<Dashboard> {
             ),
           ],
         ),
+        Wrap(
+          direction: Axis.horizontal,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, top: 10),
+              child: Text(
+                obj.getPostAuthor.getUsername,
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, top: 10),
+              child: Text(
+                obj.getCaption,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
         Padding(
           padding: const EdgeInsets.only(left: 10.0, top: 10),
           child: Text(
@@ -297,7 +320,7 @@ class _Dashboard extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    if (user == null)
+    if (user == null || showLoader)
       return Loader();
     else
       return Scaffold(
@@ -325,7 +348,18 @@ class _Dashboard extends State<Dashboard> {
             SizedBox(
               width: 20,
             ),
-            GestureDetector(onTap: () {}, child: Icon(Icons.message)),
+            GestureDetector(
+                onTap: () {
+                  setState(() {
+                    showLoader = true;
+                  });
+                  getUserData();
+                  getPosts();
+                  setState(() {
+                    showLoader = false;
+                  });
+                },
+                child: Icon(Icons.refresh)),
             SizedBox(
               width: 10,
             )
@@ -338,7 +372,8 @@ class _Dashboard extends State<Dashboard> {
               child: ListView.builder(
                 itemCount: postFeed.length,
                 itemBuilder: (context, index) {
-                  return postCard(context, postFeed[index]);
+                  return postCard(
+                      context, postFeed[postFeed.length - index - 1]);
                 },
               ),
             ),
