@@ -7,18 +7,24 @@ import 'package:Insta/pages/post.dart';
 import 'package:Insta/pages/register.dart';
 import 'package:flutter/material.dart';
 import 'package:Insta/pages/maintab.dart';
+import 'package:Insta/pages/account.dart';
+import 'package:Insta/pages/editProfile.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     // Getting arguments passed in while calling Navigator.pushNamed
     final args = settings.arguments;
     switch (settings.name) {
+      case '/editprofile':
+        return MaterialPageRoute(builder: (_) => EditProfile());
       case '/home':
         return MaterialPageRoute(builder: (_) => Dashboard());
+      case '/myprofile':
+        return MaterialPageRoute(builder: (_) => Account());
       case '/camera':
         return MaterialPageRoute(builder: (_) => CameraApp());
       case '/messages':
-        return MaterialPageRoute(builder: (_) => Messages());
+        return MaterialPageRoute(builder: (_) => FindFriend());
       case '/login':
         return MaterialPageRoute(builder: (_) => SignIn());
       case '/register':
